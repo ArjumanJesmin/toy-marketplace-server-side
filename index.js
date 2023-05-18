@@ -32,7 +32,7 @@ async function run() {
 
     const toysCollection = client.db('babyDoll').collection('dolls')
 
-     //services
+     //toys
      app.get('/toys', async (req, res) => {
       const cursor = toysCollection.find()
       const result = await cursor.toArray();
