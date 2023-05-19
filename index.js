@@ -31,24 +31,37 @@ async function run() {
     await client.connect();
 
     const toysCollection = client.db('babyDoll').collection('dolls')
+    const dollCollection = client.db('babyDoll').collection('postDolls')
 
-     //toys
-     app.get('/toys', async (req, res) => {
+    //toys
+    app.get('/toys', async (req, res) => {
       const cursor = toysCollection.find()
       const result = await cursor.toArray();
       res.send(result)
-  })
+    })
 
-  // single toys
-  app.get("/singleToys/:id", async (req, res) => {
-    console.log(req.params.id);
-    const toys = await toysCollection.findOne({
-      _id: new ObjectId(req.params.id),
+    // single toys
+    app.get("/singleToys/:id", async (req, res) => {
+      console.log(req.params.id);
+      const toys = await toysCollection.findOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send(toys);
     });
-    res.send(toys);
-  });
 
-  
+    //post 
+    app.post('/postToy', async (req, res) => {
+      const body = req.body;
+
+      if (!body) {
+        return res.status(400).send({ message: "your request is bad request" })
+      }
+      const result = await dollCollection.insertOne(body)
+      console.log(result)
+      res.send(result)
+    })
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
