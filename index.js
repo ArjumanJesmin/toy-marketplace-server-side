@@ -30,24 +30,85 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    const toysCollection = client.db('babyDoll').collection('dolls')
     const dollCollection = client.db('babyDoll').collection('postDolls')
 
-    //toys
+    // tabs collection
+    const frozenCollection = client.db('babyDoll').collection('frozenDolls')
+    const disneyCollection = client.db('babyDoll').collection('disneyDolls')
+    const animationCollection = client.db('babyDoll').collection('animationDolls')
+
+    // toys
     app.get('/toys', async (req, res) => {
-      const cursor = toysCollection.find()
+      const cursor = dollCollection.find()
       const result = await cursor.toArray();
       res.send(result)
     })
 
+    // tabs collection start -------------------------
+    app.get('/toysOne', async (req, res) => {
+      const cursor = frozenCollection.find()
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+
+    app.get('/toysTwo', async (req, res) => {
+      const cursor = disneyCollection.find()
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+
+    app.get('/toysThree', async (req, res) => {
+      const cursor = animationCollection.find()
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+
+    // single toysOne
+    app.get("/toysOne/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await frozenCollection.findOne(query)
+      res.send(result);
+    });
+    // single toysTwo
+    app.get("/toysTwo/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await disneyCollection.findOne(query)
+      res.send(result);
+    });
+    // single toysThree
+    app.get("/toysThree/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await animationCollection.findOne(query)
+      res.send(result);
+    });
+
+    // tabs collection end -------------------------
+
+
+
     // single toys
     app.get("/singleToys/:id", async (req, res) => {
-      console.log(req.params.id);
-      const toys = await toysCollection.findOne({
-        _id: new ObjectId(req.params.id),
-      });
-      res.send(toys);
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const options = {
+        projection: { title: 1, email: 1, image: 1, available_quantity: 1, description: 1, skills: 1 },
+      }
+      const result = await dollCollection.findOne(query, options)
+      res.send(result);
     });
+
+    // some dollCollection
+    app.get('/someToys', async (req, res) => {
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query.email }
+      }
+      const result = await dollCollection.find(query).toArray();
+      res.send(result)
+    })
 
     //post 
     app.post('/postToy', async (req, res) => {
