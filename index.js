@@ -122,6 +122,22 @@ async function run() {
       res.send(result)
     })
 
+    // data updated
+    app.patch('/someToys/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const updatedSomeData = req.body;
+      console.log(updatedSomeData);
+      const updateDoc = {
+        $set: {
+          status: updatedSomeData.status
+        }
+      };
+      const result = await dollCollection.updateOne(filter, updateDoc);
+      res.send(result)
+    })
+
+
     // data delete
     app.delete('/someToys/:id', async (req, res) => {
       const id = req.params.id;
