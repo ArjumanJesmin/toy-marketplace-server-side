@@ -106,7 +106,7 @@ async function run() {
        if (req.query?.email) {
          query = { email: req.query.email }
        }
-       const result = (await dollCollection.find(query).sort({radioGroup:1}).toArray());
+       const result = (await dollCollection.find(query).sort({available_quantity:1}).toArray());
        res.send(result)
      })
  
